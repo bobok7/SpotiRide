@@ -1,0 +1,11 @@
+<settings>
+    <setting propertyKey="@Properties.RefreshToken" title="Refresh Token">
+        <settingConfig type="alphaNumeric" maxLength="256" />
+    </setting>
+    <setting propertyKey="@Properties.ClientId" title="Client ID">
+        <settingConfig type="alphaNumeric" maxLength="64" />
+    </setting>
+    <setting propertyKey="@Properties.ClientSecret" title="Client Secret">
+        <settingConfig type="alphaNumeric" maxLength="64" />
+    </setting>
+</settings>

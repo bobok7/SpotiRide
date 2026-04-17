@@ -1,0 +1,14 @@
+# Credentials
+Token.txt
+my_tokens.txt
+
+# Old project
+SpotifyField/
+
+# Build artifacts (all locations)
+bin/
+SpotiRide/bin/
+*.prg
+*.prg.debug.xml
+**/gen/
+**/*-mir/

@@ -1,0 +1,5 @@
+<properties>
+    <property id="RefreshToken" type="string"></property>
+    <property id="ClientId" type="string"></property>
+    <property id="ClientSecret" type="string"></property>
+</properties>

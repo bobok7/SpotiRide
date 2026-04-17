@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpotiRide - Uzyskaj token Spotify</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #121212;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 560px;
+            width: 100%;
+        }
+        h1 {
+            color: #1DB954;
+            margin-bottom: 6px;
+            font-size: 26px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #b3b3b3;
+            margin-bottom: 30px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .step {
+            background: #282828;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .step h3 {
+            color: #1DB954;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .step p, .step li {
+            color: #b3b3b3;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .step ol { padding-left: 20px; }
+        .step li { margin-bottom: 4px; }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #404040;
+            border-radius: 6px;
+            background: #181818;
+            color: #fff;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #1DB954;
+        }
+        label {
+            display: block;
+            color: #b3b3b3;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+        button {
+            background: #1DB954;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+        button:hover { background: #1ed760; }
+        button:disabled {
+            background: #404040;
+            cursor: not-allowed;
+        }
+        .hidden { display: none; }
+        .token-result {
+            background: #282828;
+            border: 2px solid #1DB954;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .token-result h3 {
+            color: #1DB954;
+            margin-bottom: 10px;
+        }
+        .token-result p {
+            color: #b3b3b3;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .token-box {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #404040;
+            border-radius: 6px;
+            background: #181818;
+            color: #1DB954;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            min-height: 60px;
+            resize: none;
+        }
+        .copy-btn {
+            background: #1DB954;
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        .error {
+            color: #ff6b6b;
+            background: #2a1515;
+            border: 1px solid #ff6b6b;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .warn-box {
+            background: #2a2a1a;
+            border: 1px solid #e6a817;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #e6a817;
+        }
+        .url-paste-box {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #404040;
+            border-radius: 6px;
+            background: #181818;
+            color: #fff;
+            font-size: 12px;
+            font-family: monospace;
+            min-height: 80px;
+            margin-top: 8px;
+            resize: vertical;
+        }
+        code {
+            color: #1DB954;
+            background: #181818;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SpotiRide</h1>
+        <p class="subtitle">Uzyskaj Refresh Token potrzebny do polaczenia Spotify z Garmin Edge 530</p>
+
+        <!-- Phase 1: Setup -->
+        <div id="phase1">
+            <div class="step">
+                <h3>Krok 1: Wklej dane ze Spotify Developer</h3>
+                <p>Jesli nie masz jeszcze aplikacji Spotify Developer — instrukcja jest w pliku README.</p>
+
+                <label>Client ID:</label>
+                <input type="text" id="clientId" placeholder="np. abc123def456ghi789jkl012mno345pq">
+
+                <label>Client Secret:</label>
+                <input type="text" id="clientSecret" placeholder="np. xyz987wvu654tsr321qpo098nml765kj">
+
+                <div class="warn-box">
+                    <strong>Wazne!</strong> W panelu Spotify Developer w polu
+                    <strong>Redirect URI</strong> musi byc wpisane dokladnie:<br>
+                    <code>https://garmin-spotify-callback.invalid/callback</code>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Krok 2: Zaloguj sie do Spotify</h3>
+                <p>Po kliknieciu przycisku otworzy sie nowa karta z logowaniem do Spotify.</p>
+                <ol>
+                    <li>Zaloguj sie swoim kontem Spotify</li>
+                    <li>Kliknij "Zgadzam sie" (zezwol na dostep)</li>
+                    <li>Zobaczysz strone z bledem "nie mozna otworzyc" — <strong>to jest normalne!</strong></li>
+                    <li>Skopiuj <strong>caly adres</strong> z paska przegladarki (Ctrl+A, Ctrl+C w pasku)</li>
+                </ol>
+            </div>
+
+            <button id="loginBtn" onclick="startAuth()">Zaloguj sie do Spotify</button>
+        </div>
+
+        <!-- Phase 2: Paste redirect URL -->
+        <div id="phase2" class="hidden">
+            <div class="step">
+                <h3>Krok 3: Wklej adres z przegladarki</h3>
+                <p>Skopiuj <strong>caly adres</strong> z paska przegladarki (ten z bledem)
+                   i wklej go ponizej:</p>
+                <textarea class="url-paste-box" id="redirectUrl"
+                    placeholder="Wklej tutaj caly adres URL..."></textarea>
+            </div>
+            <button id="exchangeBtn" onclick="exchangeCode()">Pobierz Refresh Token</button>
+            <button style="background: #404040; margin-top: 5px;" onclick="goBack()">Wroc do poczatku</button>
+        </div>
+
+        <!-- Error display -->
+        <div class="error hidden" id="errorBox"></div>
+
+        <!-- Phase 3: Token result -->
+        <div id="phase3" class="hidden">
+            <div class="token-result">
+                <h3>Gotowe! Twoj Refresh Token:</h3>
+                <p>Skopiuj ten token i wklej go do pliku <code>TokenManager.mc</code>
+                   (szczegoly w README).</p>
+                <textarea class="token-box" id="tokenBox" readonly></textarea>
+                <button class="copy-btn" onclick="copyToClipboard('tokenBox', this)">Kopiuj Refresh Token</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var REDIRECT_URI = 'https://garmin-spotify-callback.invalid/callback';
+
+        function startAuth() {
+            var clientId = document.getElementById('clientId').value.trim();
+            var clientSecret = document.getElementById('clientSecret').value.trim();
+
+            if (!clientId) {
+                showError('Wpisz Client ID!');
+                return;
+            }
+            if (!clientSecret) {
+                showError('Wpisz Client Secret!');
+                return;
+            }
+
+            localStorage.setItem('spotiride_client_id', clientId);
+            localStorage.setItem('spotiride_client_secret', clientSecret);
+
+            var scopes = [
+                'user-read-currently-playing',
+                'user-read-playback-state',
+                'user-modify-playback-state',
+                'user-library-read',
+                'user-library-modify'
+            ].join(' ');
+
+            var authUrl = 'https://accounts.spotify.com/authorize?' +
+                'client_id=' + encodeURIComponent(clientId) +
+                '&response_type=code' +
+                '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+                '&scope=' + encodeURIComponent(scopes);
+
+            window.open(authUrl, '_blank');
+
+            document.getElementById('phase1').classList.add('hidden');
+            document.getElementById('phase2').classList.remove('hidden');
+        }
+
+        async function exchangeCode() {
+            var pastedUrl = document.getElementById('redirectUrl').value.trim();
+            if (!pastedUrl) {
+                showError('Wklej adres URL z paska przegladarki!');
+                return;
+            }
+
+            var code = null;
+            try {
+                var url = new URL(pastedUrl);
+                code = url.searchParams.get('code');
+                var error = url.searchParams.get('error');
+                if (error) {
+                    showError('Spotify odmowil dostepu: ' + error);
+                    return;
+                }
+            } catch (e) {
+                showError('To nie wyglada na poprawny adres URL. Skopiuj caly adres z paska przegladarki.');
+                return;
+            }
+
+            if (!code) {
+                showError('Nie znaleziono kodu w adresie. Skopiuj caly adres URL.');
+                return;
+            }
+
+            var clientId = localStorage.getItem('spotiride_client_id');
+            var clientSecret = localStorage.getItem('spotiride_client_secret');
+
+            if (!clientId || !clientSecret) {
+                showError('Brak danych. Odswiez strone i zacznij od Kroku 1.');
+                return;
+            }
+
+            document.getElementById('exchangeBtn').disabled = true;
+            document.getElementById('exchangeBtn').textContent = 'Pobieranie tokenu...';
+
+            try {
+                var response = await fetch('https://accounts.spotify.com/api/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret)
+                    },
+                    body: new URLSearchParams({
+                        'grant_type': 'authorization_code',
+                        'code': code,
+                        'redirect_uri': REDIRECT_URI
+                    })
+                });
+
+                var data = await response.json();
+
+                if (data.error) {
+                    showError('Blad: ' + (data.error_description || data.error));
+                    document.getElementById('exchangeBtn').disabled = false;
+                    document.getElementById('exchangeBtn').textContent = 'Pobierz Refresh Token';
+                    return;
+                }
+
+                document.getElementById('tokenBox').value = data.refresh_token;
+                document.getElementById('phase2').classList.add('hidden');
+                document.getElementById('phase3').classList.remove('hidden');
+
+                localStorage.removeItem('spotiride_client_id');
+                localStorage.removeItem('spotiride_client_secret');
+
+            } catch (e) {
+                showError('Blad sieci: ' + e.message);
+                document.getElementById('exchangeBtn').disabled = false;
+                document.getElementById('exchangeBtn').textContent = 'Pobierz Refresh Token';
+            }
+        }
+
+        function goBack() {
+            document.getElementById('phase2').classList.add('hidden');
+            document.getElementById('phase1').classList.remove('hidden');
+        }
+
+        function copyToClipboard(elementId, btn) {
+            var el = document.getElementById(elementId);
+            el.select();
+            navigator.clipboard.writeText(el.value);
+            var originalText = btn.textContent;
+            btn.textContent = 'Skopiowano!';
+            setTimeout(function() { btn.textContent = originalText; }, 2000);
+        }
+
+        function showError(msg) {
+            var box = document.getElementById('errorBox');
+            box.textContent = msg;
+            box.classList.remove('hidden');
+            setTimeout(function() { box.classList.add('hidden'); }, 8000);
+        }
+    </script>
+</body>
+</html>

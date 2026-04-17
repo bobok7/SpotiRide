@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
+    <iq:application id="b5532ffe-e391-4a3c-a62f-54d2e4f2b6c8" type="watch-app"
+        launcherIcon="@Drawables.LauncherIcon"
+        entry="SpotiRideApp"
+        name="@Strings.AppName"
+        minSdkVersion="3.3.0">
+        <iq:products>
+            <iq:product id="edge530"/>
+        </iq:products>
+        <iq:permissions>
+            <iq:uses-permission id="Communications"/>
+            <iq:uses-permission id="Positioning"/>
+            <iq:uses-permission id="Fit"/>
+            <iq:uses-permission id="SensorHistory"/>
+        </iq:permissions>
+        <iq:languages>
+            <iq:language>eng</iq:language>
+            <iq:language>pol</iq:language>
+        </iq:languages>
+    </iq:application>
+</iq:manifest>
