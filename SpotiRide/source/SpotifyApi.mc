@@ -41,19 +41,20 @@ class SpotifyApi {
             return;
         }
 
-        if (responseCode == 204 || data == null) {
-            currentTrackTitle = "";
-            currentTrackArtist = "";
-            currentTrackId = "";
+        if (responseCode == 204) {
+            // Spotify says nothing is playing — keep track info but mark as paused
             isCurrentlyPlaying = false;
-            progressMs = 0;
-            durationMs = 0;
             hasError = false;
             WatchUi.requestUpdate();
             return;
         }
 
-        if (responseCode == 200 && data instanceof Lang.Dictionary) {
+        if (responseCode != 200 || data == null) {
+            // Transient error (BT hiccup, timeout) — keep cached data as-is
+            return;
+        }
+
+        if (data instanceof Lang.Dictionary) {
             hasError = false;
             var playing = data["is_playing"];
             if (playing != null) {
@@ -96,9 +97,6 @@ class SpotifyApi {
                     }
                 }
             }
-        } else if (responseCode != 0) {
-            hasError = true;
-            errorMessage = "Blad: " + responseCode;
         }
         WatchUi.requestUpdate();
     }
